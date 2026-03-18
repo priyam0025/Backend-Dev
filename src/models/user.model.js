@@ -21,9 +21,7 @@ const userSchema = new Schema({
   fullName: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
-    index: true,
   },
   avatar: {
     type: String, //cloudinary url
@@ -49,11 +47,11 @@ const userSchema = new Schema({
 
 
 //hook
-userSchema.pre("save", function (next) { //do not use call-back functions as they do not have current context (this)
+userSchema.pre("save", async function (next) { //do not use call-back functions as they do not have current context (this)
     if (this.isModified("password")) {
-        this.password = bcrypt.hash(this.password, 10); //(password that need to be hashed, rounds)
-        next();
-    } else return next();
+        this.password = await bcrypt.hash(this.password, 10); //(password that need to be hashed, rounds)
+        return;
+    } else return;
 })
 
 //custom method
